@@ -20,11 +20,10 @@ async function getAndShowStoriesOnStart() {
  */
 
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
-
-  const hostName = story.getHostName();
+  const hostName = story.getHostName(story);
   return $(`
       <li id="${story.storyId}">
+        <input type=checkbox onclick="storeOrDelete(this.parentElement)" id="fave"></input>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -35,6 +34,26 @@ function generateStoryMarkup(story) {
     `);
 }
 
+
+function storeOrDelete(check) {
+  let checked = check.querySelector("#fave").checked
+  const storyId = check.id
+  const url = check.querySelector('a').href
+  const title = check.querySelector('a').innerText
+  let author = check.querySelector('.story-author').innerText.slice(3)
+  const story = { storyId, url, author, title }
+  checked ? User.storeAsFave(story) : User.deleteasFave(story)
+}
+
+function putFavoritesOnPage() {
+  console.debug("putFavoritesOnPage");
+  $faveListForm.empty()
+  for (let fave of currentUser.favorites) {
+    const $fave = generateStoryMarkup(fave)
+    $fave.appendTo($faveListForm);
+  }
+  $faveListForm.show()
+}
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
@@ -45,6 +64,13 @@ function putStoriesOnPage() {
   // loop through all of our stories and generate HTML for them
   for (let story of storyList.stories) {
     const $story = generateStoryMarkup(story);
+    if (currentUser != undefined) {
+      for (let fave of currentUser.favorites) {
+        if (fave.storyId == story.storyId) {
+          $story.find("#fave").prop("checked", true)
+        }
+      }
+    }
     $allStoriesList.append($story);
   }
 
@@ -61,7 +87,7 @@ async function storySubmitandShow() {
   const title = $("#title").val()
   const url = $("#url").val()
   const substory = { title, url, author }
-  const data = { "token": currentUser.username, "story": substory }
+  const data = { token: currentUser.loginToken, story: substory }
   const newstory = await StoryList.addStory(data)
 
   const $story = generateStoryMarkup(newstory)

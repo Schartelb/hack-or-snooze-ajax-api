@@ -35,10 +35,20 @@ function updateNavOnLogin() {
   $navUserProfile.text(`${currentUser.username}`).show();
 }
 
-function navStoryForm(){
+function navStoryForm() {
   console.debug("navStorySubmit");
   hidePageComponents();
   $storyForm.show();
 }
 
-$navStoryForm.on("click",navStoryForm);
+$navStoryForm.on("click", navStoryForm);
+
+function faveStoryform() {
+  console.debug("faveStoryform")
+  if (currentUser.favorites.length < 1) { return }
+  putFavoritesOnPage()
+  hidePageComponents()
+  $faveListForm.show()
+}
+
+$faveStorylist.on("click", faveStoryform);

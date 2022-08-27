@@ -22,7 +22,6 @@ async function login(evt) {
   currentUser = await User.login(username, password);
 
   $loginForm.trigger("reset");
-  console.log(currentUser)
   saveUserCredentialsInLocalStorage();
   updateUIOnUserLogin();
 }
@@ -38,7 +37,6 @@ async function signup(evt) {
   const name = $("#signup-name").val();
   const username = $("#signup-username").val();
   const password = $("#signup-password").val();
-
   // User.signup retrieves user info from API and returns User instance
   // which we'll make the globally-available, logged-in user.
   currentUser = await User.signup(username, password, name);
@@ -94,6 +92,7 @@ function saveUserCredentialsInLocalStorage() {
   if (currentUser) {
     localStorage.setItem("token", currentUser.loginToken);
     localStorage.setItem("username", currentUser.username);
+    localStorage.setItem("favorites", currentUser.favorites);
   }
 }
 
@@ -113,5 +112,6 @@ function updateUIOnUserLogin() {
   $allStoriesList.show();
   $loginForm.hide()
   $signupForm.hide()
+  $faveListForm.hide()
   updateNavOnLogin();
 }

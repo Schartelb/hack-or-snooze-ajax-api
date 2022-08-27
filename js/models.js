@@ -22,11 +22,12 @@ class Story {
   }
 
   makeStoryinfo(substory) { return { author, title, url } }
-  /** Parses hostname out of URL and returns it. */
 
-  getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+  /** Parses hostname out of URL and returns it. */
+  getHostName(story) {
+    const searchStr = "//"
+    const hostname = story.url.slice(story.url.indexOf(searchStr) + 2, story.url.indexOf('/', 10))
+    return hostname;
   }
 }
 
@@ -79,7 +80,7 @@ class StoryList {
     const response = await axios({
       url: `${BASE_URL}/stories`,
       method: "POST",
-      data: { data }
+      data: data
     })
     console.log(response)
   }
@@ -107,9 +108,8 @@ class User {
     this.username = username;
     this.name = name;
     this.createdAt = createdAt;
-
     // instantiate Story instances for the user's favorites and ownStories
-    this.favorites = favorites.map(s => new Story(s));
+    this.favorites = favorites.map(s => new Story(s))
     this.ownStories = ownStories.map(s => new Story(s));
 
     // store the login token on the user so it's easy to find for API calls.
@@ -200,4 +200,32 @@ class User {
       return null;
     }
   }
+
+  static async storeAsFave(story) {
+    const username = currentUser.username
+    const token = currentUser.loginToken
+    const response = await axios({
+      url: `${BASE_URL}/users/${username}/favorites/${story.storyId}`,
+      method: "POST",
+      params: { token }
+    })
+    console.debug("storeAsFave")
+    let arrStory = new Story(story)
+    // alert(response.data.message)
+    currentUser.favorites.push(arrStory)
+  }
+
+  static async deleteasFave(story) {
+    console.debug("deleteAsFave")
+    const username = currentUser.username
+    const token = currentUser.loginToken
+    const response = await axios({
+      url: `${BASE_URL}/users/${username}/favorites/${story.storyId}`,
+      method: "DELETE",
+      params: { token }
+    })
+    currentUser.favorites.splice(currentUser.favorites.indexOf(story.storyId))
+    // alert(response.data.message)
+  }
+
 }
