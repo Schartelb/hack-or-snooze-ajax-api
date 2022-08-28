@@ -76,7 +76,6 @@ class StoryList {
    */
 
   static async addStory(data) {
-    console.log(data)
     const response = await axios({
       url: `${BASE_URL}/stories`,
       method: "POST",
@@ -228,4 +227,18 @@ class User {
     // alert(response.data.message)
   }
 
+  static async deleteStory(story) {
+    const username = currentUser.username
+    const token = currentUser.loginToken
+    const submitter = story.querySelector(".story-user").innerText.slice(10)
+    if (submitter == username) {
+      story.remove()
+      const response = await axios({
+        url: `${BASE_URL}/stories/${story.id}`,
+        method: "DELETE",
+        params: { token }
+      })
+    } else { alert('You are not the original submitter!') }
+
+  }
 }

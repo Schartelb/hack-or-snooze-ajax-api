@@ -30,6 +30,7 @@ function generateStoryMarkup(story) {
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
+        <small class='story-delete' onclick='User.deleteStory(this.parentElement)'>Delete</small>
       </li>
     `);
 }
@@ -50,6 +51,7 @@ function putFavoritesOnPage() {
   $faveListForm.empty()
   for (let fave of currentUser.favorites) {
     const $fave = generateStoryMarkup(fave)
+    $fave.find("#fave").remove()
     $fave.appendTo($faveListForm);
   }
   $faveListForm.show()
@@ -71,6 +73,7 @@ function putStoriesOnPage() {
         }
       }
     }
+
     $allStoriesList.append($story);
   }
 
