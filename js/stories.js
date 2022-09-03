@@ -92,7 +92,7 @@ async function storySubmitandShow() {
   const substory = { title, url, author }
   const data = { token: currentUser.loginToken, story: substory }
   const newstory = await StoryList.addStory(data)
-
+  console.log(newstory)
   const $story = generateStoryMarkup(newstory)
   $allStoriesList.prepend($story)
 }

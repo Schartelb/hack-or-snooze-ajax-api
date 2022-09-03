@@ -81,7 +81,9 @@ class StoryList {
       method: "POST",
       data: data
     })
-    console.log(response)
+    console.log(response.data)
+    const story = new Story(response.data.story)
+    return story
   }
 }
 
@@ -107,7 +109,7 @@ class User {
     this.username = username;
     this.name = name;
     this.createdAt = createdAt;
-    // instantiate Story instances for the user's favorites and ownStories
+    // instantiate instances for the user's favorites and ownStories
     this.favorites = favorites.map(s => new Story(s))
     this.ownStories = ownStories.map(s => new Story(s));
 

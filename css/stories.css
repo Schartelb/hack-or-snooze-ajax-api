@@ -40,3 +40,19 @@
 .story-delete {
   cursor: pointer;
 }
+
+/* #fave {
+  visibility: hidden;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#fave:before {
+  content: "\2605";
+  visibility: visible;
+  color: goldenrod;
+}
+
+#fave:checked:before {
+  content: "\2606";
+} */
